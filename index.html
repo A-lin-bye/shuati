@@ -738,6 +738,53 @@ function streaks() {
   return { cur: curReal, best: best, total: ds.length };
 }
 
+/* ================= 作答与翻页（补回）================= */
+function pick(k) {
+  const q = cur();
+  if (!q || S.answered) return;
+  const letters = String(q.answer || "").split("").sort().join("");
+  const used = Date.now() - t0;
+  const old = recOf(q.id);
+  const ok = (k === letters);
+  S.records[q.id] = {
+    r: ok,
+    my: k,
+    t: (old ? old.t : 0) + used,
+    n: (old ? old.n : 0) + 1,
+    ts: Date.now()
+  };
+  save();
+  renderQuiz();
+  if (!ok) toast("答错了，已加入错题本");
+  else toast("答对了！");
+}
+
+function nav(d) {
+  if (!S.order.length) return;
+  const n = S.idx + d;
+  if (n < 0) { toast("已经是第一题了"); return; }
+  if (n >= S.order.length) { toast("已经是最后一题了"); return; }
+  S.idx = n;
+  renderQuiz();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function jump(i) {
+  if (i < 0 || i >= S.order.length) return;
+  S.idx = i;
+  go("quiz");
+  renderQuiz();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function toast(msg) {
+  const el = $("#toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(el._t);
+  el._t = setTimeout(function () { el.classList.remove("show"); }, 1600);
+}
+
 /* ================= 视图切换 ================= */
 let view = "quiz";
 function go(v) {
