@@ -193,6 +193,136 @@ body{background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMac
 .kv { display: flex; flex-direction: column; }
 .kv .k { font-size: 14px; color: #475569; padding: 9px 0 0; }
 .kv .v { font-size: 14px; color: #0f172a; font-weight: 600; padding-bottom: 9px; border-bottom: 1px solid #f2f4f9; }
+
+/* ================= 登录门 ================= */
+.logingate{position:fixed;inset:0;background:linear-gradient(160deg,#eef3fb 0%,#e6ecf7 100%);z-index:200;display:none;overflow-y:auto;padding:24px 16px}
+.logingate.show{display:block}
+.lg-box{max-width:420px;margin:5vh auto 40px;background:#fff;border-radius:16px;padding:26px 24px;box-shadow:0 4px 16px rgba(15,23,42,.08),0 24px 48px -20px rgba(15,23,42,.18)}
+.lg-brand{text-align:center;margin-bottom:22px}
+.lg-logo{width:52px;height:52px;line-height:52px;border-radius:14px;background:linear-gradient(135deg,#3b6ef5,#5b8def);color:#fff;font-size:24px;font-weight:700;margin:0 auto 12px;box-shadow:0 6px 16px -6px rgba(59,110,245,.6)}
+.lg-title{font-size:18px;font-weight:700;color:#0f172a}
+.lg-sub{font-size:13px;color:#94a3b8;margin-top:5px}
+.lg-users{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+.lg-empty{text-align:center;color:#94a3b8;font-size:13.5px;padding:18px 0}
+.lg-user{display:flex;align-items:center;gap:12px;border:1.5px solid #e6e9f2;border-radius:11px;padding:11px 14px;cursor:pointer;transition:.14s}
+.lg-user:hover{border-color:#93c5fd;background:#f8fbff}
+.lg-user.active{border-color:#3b6ef5;background:#f2f7ff}
+.lg-user.picked{border-color:#3b6ef5;background:#f2f7ff;box-shadow:0 0 0 3px rgba(59,110,245,.12)}
+.lg-av{width:38px;height:38px;flex:0 0 38px;line-height:38px;text-align:center;border-radius:11px;background:linear-gradient(135deg,#e0e7ff,#dbeafe);color:#3b6ef5;font-weight:700;font-size:17px}
+.lg-info{flex:1;min-width:0}
+.lg-nm{font-size:15px;font-weight:600;color:#0f172a;display:flex;align-items:center;gap:8px}
+.lg-lock{font-size:11px;font-weight:500;color:#94a3b8;background:#f1f5f9;border-radius:4px;padding:1px 6px}
+.lg-st{font-size:12.5px;color:#94a3b8;margin-top:3px}
+.lg-new{border-top:1px solid #eef2f7;padding-top:18px}
+.lg-newh{font-size:13px;font-weight:600;color:#475569;margin-bottom:10px}
+.lg-row{display:flex;gap:9px;flex-wrap:wrap}
+.lg-input{flex:1 1 140px;min-width:0;border:1px solid #d7dee8;border-radius:9px;padding:10px 13px;font-size:14px;font-family:inherit;outline:none;background:#fbfcfe}
+.lg-input:focus{border-color:#3b6ef5;background:#fff;box-shadow:0 0 0 3px rgba(59,110,245,.1)}
+.lg-err{color:#dc2626;font-size:12.5px;min-height:18px;margin-top:8px}
+.lg-btns{display:flex;gap:9px;margin-top:4px}
+.lg-btn{flex:1;border:1px solid #d7dee8;background:#fff;border-radius:9px;padding:11px;font-size:14px;font-family:inherit;font-weight:600;color:#475569;cursor:pointer;transition:.14s}
+.lg-btn:hover{border-color:#93c5fd;background:#f8fbff}
+.lg-btn.primary{background:#3b6ef5;border-color:#3b6ef5;color:#fff}
+.lg-btn.primary:hover{background:#2f5fe0}
+.lg-tip{font-size:12px;color:#a3adbf;line-height:1.7;margin-top:16px;text-align:center}
+
+/* 用户徽章 */
+.userchip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#475569;background:#f1f5f9;border-radius:7px;padding:4px 10px;cursor:pointer;font-weight:600;transition:.14s}
+.userchip:hover{background:#e2e8f0;color:#0f172a}
+
+/* 模式选择条 */
+.modebar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.modebtn{border:1px solid #e2e8f0;background:#fff;border-radius:8px;padding:7px 13px;font-size:13px;font-family:inherit;color:#475569;cursor:pointer;transition:.14s;font-weight:500}
+.modebtn:hover{border-color:#93c5fd;background:#f8fbff;color:#1d4ed8}
+.modebtn.on{background:#3b6ef5;border-color:#3b6ef5;color:#fff;font-weight:600}
+.reshuffle{margin-left:auto;border:1px solid #d7dee8;background:#fff;border-radius:8px;padding:7px 13px;font-size:13px;font-family:inherit;color:#475569;cursor:pointer;font-weight:600;transition:.14s}
+.reshuffle:hover{border-color:#3b6ef5;color:#1d4ed8;background:#f8fbff}
+.modehint{font-size:12.5px;color:#94a3b8;margin-bottom:12px}
+@media (max-width:640px){
+  .lg-box{margin:3vh auto 30px;padding:22px 18px;border-radius:14px}
+  .lg-btn{padding:12px;font-size:14.5px}
+  .modebtn{padding:6px 10px;font-size:12.5px}
+  .reshuffle{padding:6px 11px;font-size:12.5px}
+}
+
+/* ================= 夜间 / 护眼模式 ================= */
+html[data-theme="dark"] {
+  --bg: #0f1520;
+  --card: #172030;
+  --ink: #e6ecf7;
+  --ink2: #8b98ad;
+  --line: #263144;
+  --soft: #1c2637;
+}
+html[data-theme="dark"] body { background: #0f1520; color: #e6ecf7; }
+html[data-theme="dark"] .topbar { background: rgba(23,32,48,.95); border-bottom-color: #263144; }
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .pcard,
+html[data-theme="dark"] .kpi,
+html[data-theme="dark"] .lg-box,
+html[data-theme="dark"] .sheet,
+html[data-theme="dark"] .witem,
+html[data-theme="dark"] .toc-item { background: #172030; border-color: #263144; color: #e6ecf7; }
+html[data-theme="dark"] .opt { background: #1c2637; border-color: #263144; color: #e6ecf7; }
+html[data-theme="dark"] .opt:hover { border-color: #3b6ef5; background: #232f42; }
+html[data-theme="dark"] .opt .lab { background: #263144; color: #b6c2d4; }
+html[data-theme="dark"] .opt.correct { background: #14351f; border-color: #2f7a45; }
+html[data-theme="dark"] .opt.wrong { background: #3a1717; border-color: #8a3030; }
+html[data-theme="dark"] .iconbtn { background: #1c2637; border-color: #263144; color: #cfd8e6; }
+html[data-theme="dark"] .iconbtn:hover { background: #232f42; border-color: #3b6ef5; }
+html[data-theme="dark"] .modebtn { background: #1c2637; border-color: #263144; color: #b6c2d4; }
+html[data-theme="dark"] .modebtn.on { background: #3b6ef5; border-color: #3b6ef5; color: #fff; }
+html[data-theme="dark"] .modehint { color: #8b98ad; }
+html[data-theme="dark"] .logingate { background: linear-gradient(160deg,#0d1219,#131b28); }
+html[data-theme="dark"] .lg-input { background: #1c2637; border-color: #263144; color: #e6ecf7; }
+html[data-theme="dark"] .lg-user { border-color: #263144; }
+html[data-theme="dark"] .lg-user:hover,
+html[data-theme="dark"] .lg-user.picked { background: #1c2637; border-color: #3b6ef5; }
+html[data-theme="dark"] .lg-av { background: linear-gradient(135deg,#1e3a6e,#1e3355); color: #9db8f0; }
+html[data-theme="dark"] .vw-expl { background: #172030; border-color: #263144; }
+html[data-theme="dark"] .vw-quote { background: #1c2637; border-left-color: #3b6ef5; }
+html[data-theme="dark"] .vw-rel span { background: #1c2637; border-color: #263144; color: #b6c2d4; }
+html[data-theme="dark"] .actions { background: rgba(23,32,48,.96); border-top-color: #263144; }
+html[data-theme="dark"] .counter { color: #8b98ad; }
+html[data-theme="dark"] .sq { background: #1c2637; border-color: #263144; color: #cfd8e6; }
+html[data-theme="dark"] .sq.ok { background: #14351f; border-color: #2f7a45; color: #7ee0a1; }
+html[data-theme="dark"] .sq.bad { background: #3a1717; border-color: #8a3030; color: #f0a0a0; }
+html[data-theme="dark"] .sq.now { border-color: #3b6ef5; }
+html[data-theme="dark"] .toast { background: #263144; color: #e6ecf7; }
+html[data-theme="dark"] .modebar .reshuffle { background: #1c2637; border-color: #263144; color: #cfd8e6; }
+html[data-theme="dark"] h1, html[data-theme="dark"] h2, html[data-theme="dark"] h3 { color: #e6ecf7; }
+html[data-theme="dark"] .stem { color: #e6ecf7; }
+
+.toolrow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.toolbtn{border:1px solid #e2e8f0;background:#fff;border-radius:8px;padding:6px 12px;font-size:12.5px;font-family:inherit;color:#64748b;cursor:pointer;transition:.14s}
+.toolbtn:hover{border-color:#93c5fd;background:#f8fbff;color:#1d4ed8}
+.toolbtn.on{background:#fff7ed;border-color:#fdba74;color:#c2410c;font-weight:600}
+
+/* 夜间模式：解析面板补全 */
+html[data-theme="dark"] .verdict{background:#172030;border-color:#263144}
+html[data-theme="dark"] .verdict.right{border-color:#2f7a45}
+html[data-theme="dark"] .verdict.bad{border-color:#8a3030}
+html[data-theme="dark"] .verdict.right .vh{background:#14351f;color:#7ee0a1}
+html[data-theme="dark"] .verdict.bad .vh{background:#3a1717;color:#f0a0a0}
+html[data-theme="dark"] .vh .t{color:#8b98ad}
+html[data-theme="dark"] .vb{background:#172030;border-top-color:#263144;color:#cfd8e6}
+html[data-theme="dark"] .vb .k{background:#1e3a6e;color:#9db8f0}
+html[data-theme="dark"] .vb.quote{background:#141d2b}
+html[data-theme="dark"] .vb.quote .q{color:#b6c2d4;border-left-color:#3b6ef5}
+html[data-theme="dark"] .vb.rel{background:#1a1c26}
+html[data-theme="dark"] .vb.rel .k{background:#3a2f14;color:#e0b96a}
+html[data-theme="dark"] .vb .relitem{background:#1c2637;border-color:#263144;color:#b6c2d4}
+html[data-theme="dark"] .pcard{background:#172030;border-color:#263144}
+html[data-theme="dark"] .pcard .meta{color:#8b98ad}
+html[data-theme="dark"] .badge{background:#1e3a6e;color:#9db8f0}
+html[data-theme="dark"] .badge.ok{background:#14351f;color:#7ee0a1}
+html[data-theme="dark"] .badge.bad{background:#3a1717;color:#f0a0a0}
+html[data-theme="dark"] .stem b, html[data-theme="dark"] .blank{background:#1e3a6e;color:#9db8f0}
+html[data-theme="dark"] .ring text { fill: #e6ecf7; }
+html[data-theme="dark"] .bar { background: #263144; }
+html[data-theme="dark"] .empty { color: #8b98ad; }
+html[data-theme="dark"] .src { color: #6b7688; }
+/*__CSS2__*/
 </style>
 </head>
 <body>
@@ -204,6 +334,7 @@ body{background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMac
       <span>正确率 <b id="s-rate">—</b></span>
       <span>错题 <b id="s-wrong">0</b></span>
     </div>
+    <span class="userchip" data-act="switch-user" id="userchip">未登录</span>
     <button class="iconbtn tabbtn primary" data-act="go-view" data-v="quiz">刷题</button>
     <button class="iconbtn tabbtn" data-act="go-view" data-v="toc">目录</button>
     <button class="iconbtn tabbtn" data-act="go-view" data-v="wrong">错题本</button>
@@ -227,6 +358,31 @@ body{background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMac
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- ================= 登录门 ================= -->
+<div class="logingate" id="logingate">
+  <div class="lg-box">
+    <div class="lg-brand">
+      <div class="lg-logo">时</div>
+      <div class="lg-title">湖南选调时政 · 刷题</div>
+      <div class="lg-sub">选一个用户开始，各自进度独立保存</div>
+    </div>
+    <div class="lg-users" id="lg-users"></div>
+    <div class="lg-new">
+      <div class="lg-newh">新建用户</div>
+      <div class="lg-row">
+        <input id="lg-name" class="lg-input" type="text" maxlength="12" placeholder="名字，比如 我 / 哥" autocomplete="off">
+        <input id="lg-pwd" class="lg-input" type="password" maxlength="20" placeholder="密码（可留空）" autocomplete="off">
+      </div>
+      <div class="lg-err" id="lg-err"></div>
+      <div class="lg-btns">
+        <button class="lg-btn primary" data-act="lg-create">创建并进入</button>
+        <button class="lg-btn" data-act="lg-login">进入选中的</button>
+      </div>
+    </div>
+    <div class="lg-tip">进度存在本机浏览器里，两个用户互不影响。换手机不会同步。</div>
+  </div>
+</div>
 <div class="mask" id="mask"></div>
 
 <script>
@@ -242,22 +398,73 @@ const FOLDER_TITLE = window.__FOLDER_TITLE__ || {};
 /* ================= 状态 ================= */
 const LS_KEY = "hn_xuandiao_quiz_v1";
 const S = {
+  user: "",
   records: {},
+  settings: {},
   idx: 0,
   order: [],
   filter: "all",
+  mode: "seq",
   answered: false
 };
+const dailyPickCache = {};
 
 function load() {
+  const u = currentUser();
+  if (!u) { S.records = {}; return; }
   try {
-    const raw = localStorage.getItem(LS_KEY);
-    if (raw) { const d = JSON.parse(raw); if (d && typeof d === "object") S.records = d.records || {}; }
-  } catch (e) { console.warn("读取进度失败", e); }
+    const raw = localStorage.getItem(dataKey(u));
+    if (raw) {
+      const d = JSON.parse(raw);
+      if (d && typeof d === "object") { S.records = d.records || {}; S.settings = d.settings || {}; }
+    } else { S.records = {}; }
+  } catch (e) { console.warn("读取进度失败", e); S.records = {}; }
 }
 function save() {
-  try { localStorage.setItem(LS_KEY, JSON.stringify({ v: 1, records: S.records, ts: Date.now() })); }
-  catch (e) { console.warn("保存进度失败", e); }
+  const u = currentUser();
+  if (!u) return;
+  try {
+    const raw = localStorage.getItem(dataKey(u));
+    const d = raw ? JSON.parse(raw) : { v: 2, records: {} };
+    d.v = 2; d.records = S.records; d.settings = S.settings || {}; d.ts = Date.now();
+    localStorage.setItem(dataKey(u), JSON.stringify(d));
+  } catch (e) { console.warn("保存进度失败", e); }
+}
+function saveSettings() {
+  const u = currentUser();
+  if (!u) return;
+  try {
+    const raw = localStorage.getItem(dataKey(u));
+    const d = raw ? JSON.parse(raw) : { v: 2, records: {} };
+    d.settings = S.settings || {}; d.ts = Date.now();
+    localStorage.setItem(dataKey(u), JSON.stringify(d));
+  } catch (e) {}
+}
+function startSession() {
+  S.user = currentUser();
+  S.records = {};
+  S.idx = 0;
+  S.answered = false;
+  load();
+  const st = S.settings || {};
+  S.mode = st.mode || "seq";
+  S.peek = !!st.peek;
+  if (typeof applyTheme === "function") applyTheme();
+  S.filter = "all";
+  buildOrder();
+  go("quiz");
+  updateUserChip();
+}
+function updateUserChip() {
+  const el = document.getElementById("userchip");
+  const u = currentUser();
+  if (el) el.textContent = u || "未登录";
+}
+function logout() {
+  setCurrentUser("");
+  S.user = "";
+  S.records = {};
+  showLogin();
 }
 
 /* ================= 工具 ================= */
@@ -280,16 +487,6 @@ function topicOf(q) { return q.topic || "未分类"; }
 function recOf(id) { return S.records[id] || null; }
 
 /* ================= 题序 ================= */
-function buildOrder() {
-  const f = S.filter;
-  let list = QUESTIONS.slice();
-  if (f === "wrong") list = list.filter(function (q) { const r = recOf(q.id); return r && r.r === false; });
-  else if (f === "undone") list = list.filter(function (q) { return !recOf(q.id); });
-  else if (f.indexOf("folder:") === 0) { const t = f.slice(7); list = list.filter(function (q) { return q.folder === t; }); }
-  else if (f.indexOf("topic:") === 0) { const t = f.slice(6); list = list.filter(function (q) { return topicOf(q) === t; }); }
-  S.order = list;
-  if (S.idx >= S.order.length) S.idx = Math.max(0, S.order.length - 1);
-}
 function cur() { return S.order[S.idx] || null; }
 
 /* ================= 统计 ================= */
@@ -308,6 +505,306 @@ function stats() {
     }
   });
   return { total: QUESTIONS.length, done: done, right: right, wrong: wrong, tms: tms, perFolder: perFolder, rate: done ? right / done : 0 };
+}
+
+/* ================= 多用户系统 ================= */
+const LS_USERS = "hn_xd_users_v2";
+const LS_CUR = "hn_xd_current_v2";
+const LS_OLD = "hn_xuandiao_quiz_v1";
+
+function hashPwd(s) {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) { h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; }
+  return h.toString(16);
+}
+function getUsers() {
+  try { const r = localStorage.getItem(LS_USERS); const a = r ? JSON.parse(r) : []; return Array.isArray(a) ? a : []; }
+  catch (e) { return []; }
+}
+function setUsers(list) {
+  try { localStorage.setItem(LS_USERS, JSON.stringify(list)); } catch (e) { console.warn("保存用户失败", e); }
+}
+function currentUser() {
+  try { return localStorage.getItem(LS_CUR) || ""; } catch (e) { return ""; }
+}
+function setCurrentUser(n) {
+  try { localStorage.setItem(LS_CUR, n); } catch (e) {}
+}
+function dataKey(n) { return "hn_xd_data_" + n; }
+
+/* ---- 登录界面 ---- */
+let _loginPick = null;
+function showLogin() {
+  const g = $("#logingate");
+  if (!g) return;
+  g.classList.add("show");
+  renderLoginUsers();
+  setTimeout(function () { const i = $("#lg-name"); if (i) i.focus(); }, 120);
+}
+function hideLogin() {
+  const g = $("#logingate");
+  if (g) g.classList.remove("show");
+  _loginPick = null;
+}
+function renderLoginUsers() {
+  const box = $("#lg-users");
+  if (!box) return;
+  const users = getUsers();
+  const cur = currentUser();
+  if (!users.length) {
+    box.innerHTML = "<div class=\"lg-empty\">还没有用户，在下面创建一个吧</div>";
+    return;
+  }
+  let h = "";
+  users.forEach(function (u) {
+    const d = userStats(u.name);
+    const active = (u.name === cur && _loginPick === null) ? " active" : "";
+    const sel = (_loginPick === u.name) ? " picked" : "";
+    h += "<div class=\"lg-user" + active + sel + "\" data-act=\"lg-pick\" data-u=\"" + esc(u.name) + "\">";
+    h += "<div class=\"lg-av\">" + esc(u.name.slice(0, 1)) + "</div>";
+    h += "<div class=\"lg-info\"><div class=\"lg-nm\">" + esc(u.name) + (u.pwd ? "<span class=\"lg-lock\">需密码</span>" : "") + "</div>";
+    h += "<div class=\"lg-st\">已做 " + d.done + " / " + d.total + "　正确率 " + (d.done ? Math.round(d.rate * 100) + "%" : "—") + "</div></div>";
+    h += "</div>";
+  });
+  box.innerHTML = h;
+}
+function userStats(name) {
+  let recs = {};
+  try { const raw = localStorage.getItem(dataKey(name)); if (raw) { const d = JSON.parse(raw); recs = (d && d.records) || {}; } }
+  catch (e) {}
+  const total = (window.__QUIZ_DATA__ || []).length;
+  let done = 0, right = 0;
+  Object.keys(recs).forEach(function (k) { done++; if (recs[k] && recs[k].r) right++; });
+  return { done: done, total: total, right: right, rate: done ? right / done : 0 };
+}
+function doLogin(name, pwd) {
+  const users = getUsers();
+  const u = users.filter(function (x) { return x.name === name; })[0];
+  const err = $("#lg-err");
+  if (!u) { if (err) err.textContent = "用户不存在"; return; }
+  if (u.pwd && hashPwd(pwd || "") !== u.pwd) {
+    if (err) err.textContent = "密码不对";
+    const p = $("#lg-pwd"); if (p) { p.value = ""; p.focus(); }
+    return;
+  }
+  if (err) err.textContent = "";
+  setCurrentUser(name);
+  hideLogin();
+  startSession();
+}
+function createUser() {
+  const nm = $("#lg-name"), pw = $("#lg-pwd"), err = $("#lg-err");
+  const name = (nm ? nm.value : "").trim();
+  if (!name) { if (err) err.textContent = "先起个名字"; return; }
+  if (name.length > 12) { if (err) err.textContent = "名字最多 12 个字"; return; }
+  const users = getUsers();
+  if (users.some(function (x) { return x.name === name; })) { if (err) err.textContent = "这个名字已经有人用了"; return; }
+  const pwd = (pw ? pw.value : "").trim();
+  const isFirst = users.length === 0 && !localStorage.getItem(LS_OLD + "_migrated");
+  users.push({ name: name, pwd: pwd ? hashPwd(pwd) : "", createdAt: Date.now() });
+  setUsers(users);
+  if (isFirst) {
+    try {
+      const old = localStorage.getItem(LS_OLD);
+      if (old) { localStorage.setItem(dataKey(name), old); localStorage.setItem(LS_OLD + "_migrated", "1"); }
+    } catch (e) {}
+  }
+  if (err) err.textContent = "";
+  setCurrentUser(name);
+  hideLogin();
+  startSession();
+}
+function switchUser() {
+  _loginPick = null;
+  const err = $("#lg-err"); if (err) err.textContent = "";
+  const nm = $("#lg-name"); if (nm) nm.value = "";
+  const pw = $("#lg-pwd"); if (pw) pw.value = "";
+  showLogin();
+}
+function deleteUser(name) {
+  const users = getUsers().filter(function (x) { return x.name !== name; });
+  setUsers(users);
+  try { localStorage.removeItem(dataKey(name)); } catch (e) {}
+  if (currentUser() === name) { setCurrentUser(""); }
+  renderLoginUsers();
+}
+
+/* ================= 答题模式与随机 ================= */
+const MODES = {
+  seq:   { name: "顺序练习", desc: "从第一题开始，按资料顺序过" },
+  rand:  { name: "随机练习", desc: "每次进入都重新打乱题序" },
+  wrong: { name: "错题重练", desc: "只做做错的题，做对后自动移出" },
+  undone:{ name: "只做没做过的", desc: "跳过已经做过的题" },
+  daily: { name: "每日一练", desc: "每天固定 20 题，全网随机" }
+};
+
+function shuffle(a) {
+  const arr = a.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+  }
+  return arr;
+}
+
+/* 每日一练的种子：同一天进同一个用户，题目一样；换天自动换题 */
+function todaySeed() {
+  const d = new Date();
+  return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+}
+function seededShuffle(a, seed) {
+  const arr = a.slice();
+  let s = seed >>> 0;
+  function rnd() { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+  }
+  return arr;
+}
+
+function buildOrder() {
+  const f = S.filter;
+  let list;
+  const all = QUESTIONS.slice();
+
+  if (S.mode === "daily") {
+    const ud = all.filter(function (q) { return !recOf(q.id); });
+    const base = ud.length >= 20 ? ud : all;
+    const seed = todaySeed();
+    const key = S.user + "|" + seed;
+    let pick = dailyPickCache[key];
+    if (!pick) {
+      pick = seededShuffle(base, seed + hashPwd(S.user)).slice(0, 20).map(function (q) { return q.id; });
+      pick.sort(function (x, y) { return x < y ? -1 : 1; });
+      pick = seededShuffle(pick, seed).slice(0, 20);
+      dailyPickCache[key] = pick;
+    }
+    const map = {}; all.forEach(function (q) { map[q.id] = q; });
+    list = pick.map(function (id) { return map[id]; }).filter(Boolean);
+    S.order = list;
+    S.idx = 0;
+    return;
+  }
+
+  if (S.mode === "wrong") list = all.filter(function (q) { const r = recOf(q.id); return r && r.r === false; });
+  else if (S.mode === "undone") list = all.filter(function (q) { return !recOf(q.id); });
+  else list = all;
+
+  if (f !== "all") {
+    if (f.indexOf("folder:") === 0) { const t = f.slice(7); list = list.filter(function (q) { return q.folder === t; }); }
+    else if (f.indexOf("topic:") === 0) { const t = f.slice(6); list = list.filter(function (q) { return topicOf(q) === t; }); }
+  }
+
+  if (S.mode === "rand") {
+    const key = S.user + "|" + Date.now() + "|" + Math.random();
+    list = shuffle(list);
+    S.shuffleToken = key;
+  }
+
+  S.order = list;
+  if (S.idx >= S.order.length) S.idx = Math.max(0, S.order.length - 1);
+}
+
+function reshuffle() {
+  if (S.mode !== "rand") { S.mode = "rand"; }
+  S.idx = 0;
+  buildOrder();
+  S.answered = false;
+  renderQuiz();
+  toast("题目已重新打乱");
+}
+
+function setMode(m) {
+  S.mode = m;
+  S.idx = 0;
+  S.answered = false;
+  buildOrder();
+  go("quiz");
+  const mn = (MODES[m] || {}).name || m;
+  toast("已切到「" + mn + "」");
+}
+
+/* 答题卡：当前模式下的位置提示 */
+function modeHint() {
+  const m = MODES[S.mode] || MODES.seq;
+  if (S.mode === "daily") {
+    return "每日一练 · " + todayStr() + " · 共 " + S.order.length + " 题";
+  }
+  return m.name + " · 共 " + S.order.length + " 题";
+}
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
+/* ================= 增强功能：背题 / 收藏 / 进度记忆 / 护眼 ================= */
+
+/* 背题模式：进入题目直接显示答案 */
+function togglePeek() {
+  S.peek = !S.peek;
+  S.settings.peek = S.peek;
+  saveSettings();
+  renderQuiz();
+  toast(S.peek ? "背题模式：已直接显示答案" : "背题模式已关闭");
+}
+
+/* 收藏 */
+function isFav(id) { return !!(S.settings.fav && S.settings.fav[id]); }
+function toggleFav(id) {
+  if (!S.settings.fav) S.settings.fav = {};
+  if (S.settings.fav[id]) { delete S.settings.fav[id]; toast("已取消收藏"); }
+  else { S.settings.fav[id] = 1; toast("已收藏，可在目录页看收藏夹"); }
+  saveSettings();
+  renderQuiz();
+}
+function favList() {
+  const fav = S.settings.fav || {};
+  return QUESTIONS.filter(function (q) { return fav[q.id]; });
+}
+
+/* 进度记忆：记住上次做到哪一题 */
+function rememberPos() {
+  const q = cur();
+  if (!q) return;
+  S.settings.lastId = q.id;
+  S.settings.lastIdx = S.idx;
+  S.settings.lastMode = S.mode;
+  saveSettings();
+}
+function resumePos() {
+  const st = S.settings || {};
+  if (!st.lastId) return false;
+  const i = S.order.findIndex(function (q) { return q.id === st.lastId; });
+  if (i < 0) return false;
+  S.idx = i;
+  go("quiz");
+  toast("已回到上次做到的第 " + (i + 1) + " 题");
+  return true;
+}
+
+/* 护眼/夜间模式 */
+function applyTheme() {
+  const t = (S.settings.theme === "dark") ? "dark" : "light";
+  document.documentElement.setAttribute("data-theme", t);
+  const b = document.getElementById("themebtn");
+  if (b) b.textContent = (t === "dark") ? "白天" : "夜间";
+}
+function toggleTheme() {
+  S.settings.theme = (S.settings.theme === "dark") ? "light" : "dark";
+  saveSettings();
+  applyTheme();
+}
+
+/* 收藏夹筛选 */
+function setFavFilter() {
+  const list = favList();
+  if (!list.length) { toast("还没有收藏的题"); return; }
+  S.order = list;
+  S.idx = 0;
+  S.mode = "fav";
+  go("quiz");
+  toast("收藏夹：共 " + list.length + " 题");
 }
 
 /* ================= 进度条与顶栏数字 ================= */
@@ -415,6 +912,28 @@ function renderVerdict(q, r, letters, mySel) {
   return h;
 }
 
+/* 模式选择条 */
+function modeBarHTML() {
+  let h = "<div class=\"modebar\">";
+  ["seq", "rand", "wrong", "undone", "daily"].forEach(function (m) {
+    const on = (S.mode === m) ? " on" : "";
+    const nm = (MODES[m] || {}).name || m;
+    h += "<button class=\"modebtn" + on + "\" data-act=\"set-mode\" data-m=\"" + m + "\">" + nm + "</button>";
+  });
+  h += "<button class=\"reshuffle\" data-act=\"reshuffle\">换一批题</button>";
+  h += "</div>";
+  h += "<div class=\"modehint\">" + esc(modeHint()) + "</div>";
+  h += "<div class=\"toolrow\">";
+  const q = cur();
+  if (q) {
+    h += "<button class=\"toolbtn" + (isFav(q.id) ? " on" : "") + "\" data-act=\"toggle-fav\">" + (isFav(q.id) ? "已收藏" : "收藏") + "</button>";
+  }
+  h += "<button class=\"toolbtn" + (S.peek ? " on" : "") + "\" data-act=\"toggle-peek\">背题模式</button>";
+  h += "<button class=\"toolbtn\" data-act=\"set-fav-filter\">收藏夹</button>";
+  h += "<button class=\"toolbtn\" data-act=\"toggle-theme\" id=\"themebtn\">夜间</button>";
+  h += "</div>";
+  return h;
+}
 function renderQuiz() {
   const q = cur();
   const box = $("#view");
@@ -467,7 +986,7 @@ function renderQuiz() {
   h += "</div>";
   if (answered) h += renderVerdict(q, r, letters, mySel);
   h += "</div>";
-  box.innerHTML = h;
+  box.innerHTML = modeBarHTML() + h;
   t0 = Date.now();
   updateBars();
   if (answered) {
@@ -754,6 +1273,7 @@ function pick(k) {
     ts: Date.now()
   };
   save();
+  if (typeof rememberPos === "function") rememberPos();
   renderQuiz();
   if (!ok) toast("答错了，已加入错题本");
   else toast("答对了！");
@@ -765,6 +1285,7 @@ function nav(d) {
   if (n < 0) { toast("已经是第一题了"); return; }
   if (n >= S.order.length) { toast("已经是最后一题了"); return; }
   S.idx = n;
+  if (typeof rememberPos === "function") rememberPos();
   renderQuiz();
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -822,6 +1343,38 @@ document.addEventListener("click", function (e) {
   if (act === "import") { importData(); return; }
   if (act === "reset-all") { if (confirm("确定清空全部答题记录吗？此操作不可撤销。")) { S.records = {}; save(); go("stats"); toast("已清空"); } return; }
   if (act === "reset-progress") { if (confirm("确定清空全部刷题进度吗？错题本、正确率、用时都会归零，此操作不可撤销。")) { S.records = {}; save(); go("stats"); toast("进度已清空"); } return; }
+  if (act === "lg-pick") {
+    var u = getUsers().filter(function (x) { return x.name === el.getAttribute("data-u"); })[0];
+    _loginPick = el.getAttribute("data-u");
+    renderLoginUsers();
+    var err = document.getElementById("lg-err");
+    if (u && u.pwd) { var p = document.getElementById("lg-pwd"); if (p) p.focus(); if (err) err.textContent = "这个用户有密码，输入后点「进入选中的」"; return; }
+    if (err) err.textContent = "";
+    doLogin(_loginPick, "");
+    return;
+  }
+  if (act === "lg-create") { createUser(); return; }
+  if (act === "lg-login") {
+    var err2 = document.getElementById("lg-err");
+    if (!_loginPick) { if (err2) err2.textContent = "先点上面选一个用户"; return; }
+    var pw = document.getElementById("lg-pwd");
+    doLogin(_loginPick, pw ? pw.value : "");
+    return;
+  }
+  if (act === "switch-user") { switchUser(); return; }
+  if (act === "logout") { logout(); return; }
+  if (act === "reshuffle") { reshuffle(); return; }
+  if (act === "set-mode") { setMode(el.getAttribute("data-m")); return; }
+  if (act === "toggle-fav") { var _q = cur(); if (_q) toggleFav(_q.id); return; }
+  if (act === "toggle-peek") { togglePeek(); return; }
+  if (act === "set-fav-filter") { setFavFilter(); return; }
+  if (act === "toggle-theme") { toggleTheme(); return; }
+  if (act === "resume") { resumePos(); return; }
+  if (act === "del-user") {
+    var du = el.getAttribute("data-u");
+    if (confirm("删除用户「" + du + "」？该用户的进度会一起删掉，不可恢复。")) deleteUser(du);
+    return;
+  }
   if (act === "mock") { mockFill(); return; }
   if (act === "goto") { var w2 = document.getElementById("sheetwrap"); if (w2) w2.remove(); gotoIdx(parseInt(el.getAttribute("data-i"), 10)); return; }
   if (act === "close-modal") { $("#mask").classList.remove("show"); return; }
@@ -847,6 +1400,16 @@ function clearWrong() {
 }
 
 document.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    var lg = document.getElementById("logingate");
+    if (lg && lg.classList.contains("show")) {
+      var nm = document.getElementById("lg-name");
+      if (nm && nm.value.trim()) { createUser(); }
+      else if (_loginPick) { var pw = document.getElementById("lg-pwd"); doLogin(_loginPick, pw ? pw.value : ""); }
+      e.preventDefault();
+      return;
+    }
+  }
   if (view !== "quiz") return;
   if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
   if (e.key === "ArrowLeft") { nav(-1); e.preventDefault(); }
@@ -898,12 +1461,11 @@ function mockFill() {
 
 /* ================= 启动 ================= */
 function init() {
-  load();
-  buildOrder();
-  go("quiz");
   if (!QUESTIONS.length) {
-    $("#view").innerHTML = "<div class=\"panel\"><div class=\"empty\">题库数据未加载。</div></div>";
+    document.getElementById("view").innerHTML = "<div class=\"panel\"><div class=\"empty\">题库数据未加载。</div></div>";
+    return;
   }
+  if (currentUser()) { startSession(); } else { showLogin(); }
 }
 document.addEventListener("DOMContentLoaded", init);
 
