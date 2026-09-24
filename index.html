@@ -322,6 +322,15 @@ html[data-theme="dark"] .ring text { fill: #e6ecf7; }
 html[data-theme="dark"] .bar { background: #263144; }
 html[data-theme="dark"] .empty { color: #8b98ad; }
 html[data-theme="dark"] .src { color: #6b7688; }
+
+/* 记住密码相关 */
+.lg-check{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:#475569;cursor:pointer;user-select:none}
+.lg-check input{width:16px;height:16px;accent-color:#3b6ef5;cursor:pointer;flex:0 0 16px}
+.lg-hint{font-size:12.5px;color:#16a34a;min-height:18px;margin-top:6px}
+.lg-mem{font-size:11px;font-weight:500;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:4px;padding:1px 6px}
+html[data-theme="dark"] .lg-check{color:#b6c2d4}
+html[data-theme="dark"] .lg-hint{color:#7ee0a1}
+html[data-theme="dark"] .lg-mem{background:#14351f;border-color:#2f7a45;color:#7ee0a1}
 /*__CSS2__*/
 </style>
 </head>
@@ -358,7 +367,6 @@ html[data-theme="dark"] .src { color: #6b7688; }
 </div>
 
 <div class="toast" id="toast"></div>
-
 <!-- ================= 登录门 ================= -->
 <div class="logingate" id="logingate">
   <div class="lg-box">
@@ -374,7 +382,9 @@ html[data-theme="dark"] .src { color: #6b7688; }
         <input id="lg-name" class="lg-input" type="text" maxlength="12" placeholder="名字，比如 我 / 哥" autocomplete="off">
         <input id="lg-pwd" class="lg-input" type="password" maxlength="20" placeholder="密码（可留空）" autocomplete="off">
       </div>
+      <label class="lg-check"><input type="checkbox" id="lg-remember" checked><span>记住密码，下次点名字直接进</span></label>
       <div class="lg-err" id="lg-err"></div>
+      <div class="lg-hint" id="lg-hint"></div>
       <div class="lg-btns">
         <button class="lg-btn primary" data-act="lg-create">创建并进入</button>
         <button class="lg-btn" data-act="lg-login">进入选中的</button>
@@ -507,7 +517,7 @@ function stats() {
   return { total: QUESTIONS.length, done: done, right: right, wrong: wrong, tms: tms, perFolder: perFolder, rate: done ? right / done : 0 };
 }
 
-/* ================= 多用户系统 ================= */
+/* ================= 多用户系统（含记住密码） ================= */
 const LS_USERS = "hn_xd_users_v2";
 const LS_CUR = "hn_xd_current_v2";
 const LS_OLD = "hn_xuandiao_quiz_v1";
@@ -524,6 +534,11 @@ function getUsers() {
 function setUsers(list) {
   try { localStorage.setItem(LS_USERS, JSON.stringify(list)); } catch (e) { console.warn("保存用户失败", e); }
 }
+function findUser(name) {
+  const us = getUsers();
+  for (let i = 0; i < us.length; i++) { if (us[i].name === name) return us[i]; }
+  return null;
+}
 function currentUser() {
   try { return localStorage.getItem(LS_CUR) || ""; } catch (e) { return ""; }
 }
@@ -532,22 +547,68 @@ function setCurrentUser(n) {
 }
 function dataKey(n) { return "hn_xd_data_" + n; }
 
+function lastUser() {
+  try { return localStorage.getItem("hn_xd_last_v2") || ""; } catch (e) { return ""; }
+}
+function setLastUser(n) {
+  try { if (n) localStorage.setItem("hn_xd_last_v2", n); } catch (e) {}
+}
+
+/* ---- 记住密码 ---- */
+function rememberChecked() {
+  const cb = document.getElementById("lg-remember");
+  return cb ? !!cb.checked : true;
+}
+function saveUserPwd(name, pwd) {
+  const us = getUsers();
+  for (let i = 0; i < us.length; i++) {
+    if (us[i].name === name) { us[i].savedPwd = pwd || ""; us[i].remember = true; break; }
+  }
+  setUsers(us);
+}
+function clearUserPwd(name) {
+  const us = getUsers();
+  for (let i = 0; i < us.length; i++) {
+    if (us[i].name === name) { delete us[i].savedPwd; us[i].remember = false; break; }
+  }
+  setUsers(us);
+}
+function hasSavedPwd(u) {
+  return !!(u && u.remember && typeof u.savedPwd === "string");
+}
+
 /* ---- 登录界面 ---- */
 let _loginPick = null;
 function showLogin() {
-  const g = $("#logingate");
+  const g = document.getElementById("logingate");
   if (!g) return;
+  const cur = currentUser() || lastUser();
+  _loginPick = cur || null;
   g.classList.add("show");
   renderLoginUsers();
-  setTimeout(function () { const i = $("#lg-name"); if (i) i.focus(); }, 120);
+  prefillLogin();
+  setTimeout(function () { const i = document.getElementById("lg-name"); if (i && !_loginPick) i.focus(); }, 120);
+}
+function prefillLogin() {
+  const pw = document.getElementById("lg-pwd");
+  const hint = document.getElementById("lg-hint");
+  if (!_loginPick) { if (pw) pw.value = ""; if (hint) hint.textContent = ""; return; }
+  const u = findUser(_loginPick);
+  if (hasSavedPwd(u)) {
+    if (pw) pw.value = u.savedPwd;
+    if (hint) hint.textContent = "已记住密码，直接点「进入选中的」即可";
+  } else {
+    if (pw) pw.value = "";
+    if (hint) hint.textContent = "";
+  }
 }
 function hideLogin() {
-  const g = $("#logingate");
+  const g = document.getElementById("logingate");
   if (g) g.classList.remove("show");
   _loginPick = null;
 }
 function renderLoginUsers() {
-  const box = $("#lg-users");
+  const box = document.getElementById("lg-users");
   if (!box) return;
   const users = getUsers();
   const cur = currentUser();
@@ -562,7 +623,10 @@ function renderLoginUsers() {
     const sel = (_loginPick === u.name) ? " picked" : "";
     h += "<div class=\"lg-user" + active + sel + "\" data-act=\"lg-pick\" data-u=\"" + esc(u.name) + "\">";
     h += "<div class=\"lg-av\">" + esc(u.name.slice(0, 1)) + "</div>";
-    h += "<div class=\"lg-info\"><div class=\"lg-nm\">" + esc(u.name) + (u.pwd ? "<span class=\"lg-lock\">需密码</span>" : "") + "</div>";
+    h += "<div class=\"lg-info\"><div class=\"lg-nm\">" + esc(u.name);
+    if (hasSavedPwd(u)) h += "<span class=\"lg-mem\">已记住</span>";
+    else if (u.pwd) h += "<span class=\"lg-lock\">需密码</span>";
+    h += "</div>";
     h += "<div class=\"lg-st\">已做 " + d.done + " / " + d.total + "　正确率 " + (d.done ? Math.round(d.rate * 100) + "%" : "—") + "</div></div>";
     h += "</div>";
   });
@@ -577,23 +641,27 @@ function userStats(name) {
   Object.keys(recs).forEach(function (k) { done++; if (recs[k] && recs[k].r) right++; });
   return { done: done, total: total, right: right, rate: done ? right / done : 0 };
 }
-function doLogin(name, pwd) {
-  const users = getUsers();
-  const u = users.filter(function (x) { return x.name === name; })[0];
-  const err = $("#lg-err");
-  if (!u) { if (err) err.textContent = "用户不存在"; return; }
+function doLogin(name, pwd, opt) {
+  opt = opt || {};
+  const u = findUser(name);
+  const err = document.getElementById("lg-err");
+  if (!u) { if (err) err.textContent = "用户不存在"; return false; }
   if (u.pwd && hashPwd(pwd || "") !== u.pwd) {
     if (err) err.textContent = "密码不对";
-    const p = $("#lg-pwd"); if (p) { p.value = ""; p.focus(); }
-    return;
+    const p = document.getElementById("lg-pwd"); if (p) { p.value = ""; p.focus(); }
+    return false;
   }
+  if (opt.remember === true) saveUserPwd(name, pwd || "");
+  else if (opt.remember === false) clearUserPwd(name);
   if (err) err.textContent = "";
   setCurrentUser(name);
+  setLastUser(name);
   hideLogin();
   startSession();
+  return true;
 }
 function createUser() {
-  const nm = $("#lg-name"), pw = $("#lg-pwd"), err = $("#lg-err");
+  const nm = document.getElementById("lg-name"), pw = document.getElementById("lg-pwd"), err = document.getElementById("lg-err");
   const name = (nm ? nm.value : "").trim();
   if (!name) { if (err) err.textContent = "先起个名字"; return; }
   if (name.length > 12) { if (err) err.textContent = "名字最多 12 个字"; return; }
@@ -601,7 +669,9 @@ function createUser() {
   if (users.some(function (x) { return x.name === name; })) { if (err) err.textContent = "这个名字已经有人用了"; return; }
   const pwd = (pw ? pw.value : "").trim();
   const isFirst = users.length === 0 && !localStorage.getItem(LS_OLD + "_migrated");
-  users.push({ name: name, pwd: pwd ? hashPwd(pwd) : "", createdAt: Date.now() });
+  const rec = { name: name, pwd: pwd ? hashPwd(pwd) : "", createdAt: Date.now() };
+  if (rememberChecked()) { rec.savedPwd = pwd; rec.remember = true; }
+  users.push(rec);
   setUsers(users);
   if (isFirst) {
     try {
@@ -611,14 +681,13 @@ function createUser() {
   }
   if (err) err.textContent = "";
   setCurrentUser(name);
+  setLastUser(name);
   hideLogin();
   startSession();
 }
 function switchUser() {
-  _loginPick = null;
-  const err = $("#lg-err"); if (err) err.textContent = "";
-  const nm = $("#lg-name"); if (nm) nm.value = "";
-  const pw = $("#lg-pwd"); if (pw) pw.value = "";
+  const err = document.getElementById("lg-err"); if (err) err.textContent = "";
+  const nm = document.getElementById("lg-name"); if (nm) nm.value = "";
   showLogin();
 }
 function deleteUser(name) {
@@ -626,7 +695,9 @@ function deleteUser(name) {
   setUsers(users);
   try { localStorage.removeItem(dataKey(name)); } catch (e) {}
   if (currentUser() === name) { setCurrentUser(""); }
+  if (_loginPick === name) _loginPick = null;
   renderLoginUsers();
+  prefillLogin();
 }
 
 /* ================= 答题模式与随机 ================= */
@@ -1344,13 +1415,17 @@ document.addEventListener("click", function (e) {
   if (act === "reset-all") { if (confirm("确定清空全部答题记录吗？此操作不可撤销。")) { S.records = {}; save(); go("stats"); toast("已清空"); } return; }
   if (act === "reset-progress") { if (confirm("确定清空全部刷题进度吗？错题本、正确率、用时都会归零，此操作不可撤销。")) { S.records = {}; save(); go("stats"); toast("进度已清空"); } return; }
   if (act === "lg-pick") {
-    var u = getUsers().filter(function (x) { return x.name === el.getAttribute("data-u"); })[0];
+    var u = findUser(el.getAttribute("data-u"));
     _loginPick = el.getAttribute("data-u");
     renderLoginUsers();
+    prefillLogin();
     var err = document.getElementById("lg-err");
-    if (u && u.pwd) { var p = document.getElementById("lg-pwd"); if (p) p.focus(); if (err) err.textContent = "这个用户有密码，输入后点「进入选中的」"; return; }
-    if (err) err.textContent = "";
-    doLogin(_loginPick, "");
+    if (!u) { if (err) err.textContent = "用户不存在"; return; }
+    if (!u.pwd) { if (err) err.textContent = ""; doLogin(_loginPick, ""); return; }
+    if (hasSavedPwd(u)) { if (err) err.textContent = ""; doLogin(_loginPick, u.savedPwd); return; }
+    var p = document.getElementById("lg-pwd");
+    if (p) { p.value = ""; p.focus(); }
+    if (err) err.textContent = "这个用户有密码，输入后点「进入选中的」";
     return;
   }
   if (act === "lg-create") { createUser(); return; }
@@ -1358,18 +1433,17 @@ document.addEventListener("click", function (e) {
     var err2 = document.getElementById("lg-err");
     if (!_loginPick) { if (err2) err2.textContent = "先点上面选一个用户"; return; }
     var pw = document.getElementById("lg-pwd");
-    doLogin(_loginPick, pw ? pw.value : "");
+    doLogin(_loginPick, pw ? pw.value : "", { remember: rememberChecked() });
     return;
   }
   if (act === "switch-user") { switchUser(); return; }
   if (act === "logout") { logout(); return; }
+  if (act === "forget-pwd") {
+    if (_loginPick) { clearUserPwd(_loginPick); renderLoginUsers(); prefillLogin(); toast("已取消记住密码"); }
+    return;
+  }
   if (act === "reshuffle") { reshuffle(); return; }
   if (act === "set-mode") { setMode(el.getAttribute("data-m")); return; }
-  if (act === "toggle-fav") { var _q = cur(); if (_q) toggleFav(_q.id); return; }
-  if (act === "toggle-peek") { togglePeek(); return; }
-  if (act === "set-fav-filter") { setFavFilter(); return; }
-  if (act === "toggle-theme") { toggleTheme(); return; }
-  if (act === "resume") { resumePos(); return; }
   if (act === "del-user") {
     var du = el.getAttribute("data-u");
     if (confirm("删除用户「" + du + "」？该用户的进度会一起删掉，不可恢复。")) deleteUser(du);
@@ -1405,7 +1479,12 @@ document.addEventListener("keydown", function (e) {
     if (lg && lg.classList.contains("show")) {
       var nm = document.getElementById("lg-name");
       if (nm && nm.value.trim()) { createUser(); }
-      else if (_loginPick) { var pw = document.getElementById("lg-pwd"); doLogin(_loginPick, pw ? pw.value : ""); }
+      else if (_loginPick) {
+        var uu = findUser(_loginPick);
+        var pw2 = document.getElementById("lg-pwd");
+        if (hasSavedPwd(uu)) doLogin(_loginPick, uu.savedPwd);
+        else doLogin(_loginPick, pw2 ? pw2.value : "", { remember: rememberChecked() });
+      }
       e.preventDefault();
       return;
     }
