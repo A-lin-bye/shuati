@@ -907,19 +907,14 @@ function init() {
 }
 document.addEventListener("DOMContentLoaded", init);
 
-/* 底部导航按钮绑定 */
+/* 底部导航按钮绑定（只绑一次，绑定后打标记防重复）*/
 document.addEventListener("DOMContentLoaded", function () {
   const bp = $("#btn-prev"), bn = $("#btn-next");
-  if (bp) bp.addEventListener("click", function () { nav(-1); });
-  if (bn) bn.addEventListener("click", function () { nav(1); });
+  if (bp && !bp._navBound) { bp._navBound = 1; bp.addEventListener("click", function () { nav(-1); }); }
+  if (bn && !bn._navBound) { bn._navBound = 1; bn.addEventListener("click", function () { nav(1); }); }
 });
 
-/* 底部导航按钮绑定 */
-document.addEventListener("DOMContentLoaded", function () {
-  const bp = $("#btn-prev"), bn = $("#btn-next");
-  if (bp) bp.addEventListener("click", function () { nav(-1); });
-  if (bn) bn.addEventListener("click", function () { nav(1); });
-});
+/* nav 按钮的事件绑定统一在 tpl_3d.txt，本文件留空，避免重复绑定 */
 </script>
 </body>
 </html>
