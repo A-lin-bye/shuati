@@ -1009,12 +1009,17 @@ function renderQuiz() {
   const q = cur();
   const box = $("#view");
   if (!q) {
-    let msg = "当前筛选下没有题目。";
-    if (S.filter === "wrong") msg = "错题本已清空，没有需要复习的错题了 ";
-    else if (S.filter === "undone") msg = "所有题目都做过了！";
-    box.innerHTML = "<div class=\"panel\"><div class=\"empty\"><div class=\"big ok\">✓</div>" + msg +
+    let msg = "当前模式下没有题目。";
+    let sub = "";
+    if (S.mode === "wrong") { msg = "错题本里暂时没有题"; sub = "做错的题会自动进这里"; }
+    else if (S.mode === "undone") { msg = "所有题目都做过了"; sub = "换个模式继续练吧"; }
+    else if (S.mode === "daily") { msg = "今天的每日一练已完成"; sub = "明天会换一批新题"; }
+    else if (S.mode === "fav") { msg = "收藏夹是空的"; sub = "刷题时点「收藏」把好题存进来"; }
+    box.innerHTML = modeBarHTML() +
+      "<div class=\"panel\"><div class=\"empty\"><div class=\"big ok\">OK</div>" + msg +
+      (sub ? "<div class=\"sub\">" + sub + "</div>" : "") +
       "</div><div style=\"display:flex;gap:10px;margin-top:14px\">" +
-      "<button class=\"iconbtn primary\" style=\"flex:1\" data-act=\"reset-filter\">回到全部题目</button>" +
+      "<button class=\"iconbtn primary\" style=\"flex:1\" data-act=\"set-mode\" data-m=\"seq\">回到顺序练习</button>" +
       "<button class=\"iconbtn\" style=\"flex:1\" data-act=\"go-view\" data-v=\"stats\">看统计</button>" +
       "</div></div>";
     updateBars();
@@ -1443,6 +1448,11 @@ document.addEventListener("click", function (e) {
     return;
   }
   if (act === "reshuffle") { reshuffle(); return; }
+  if (act === "toggle-fav") { var _fq = cur(); if (_fq) toggleFav(_fq.id); return; }
+  if (act === "toggle-peek") { togglePeek(); return; }
+  if (act === "set-fav-filter") { setFavFilter(); return; }
+  if (act === "toggle-theme") { toggleTheme(); return; }
+  if (act === "resume") { resumePos(); return; }
   if (act === "set-mode") { setMode(el.getAttribute("data-m")); return; }
   if (act === "del-user") {
     var du = el.getAttribute("data-u");
